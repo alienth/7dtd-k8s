@@ -1,0 +1,36 @@
+startMode: 1
+serverVersion: stable
+timeZone: America/Los_Angeles
+
+# resources:
+#   requests:
+#     memory: "4Gi"
+#     cpu: "2000m"
+
+image:
+  repository: vinanrra/7dtd-server
+  tag: v0.7.3
+
+storage:
+  serverFiles:
+    kind: persistentVolumeClaim
+    pvc:
+      size: 25Gi
+  saveData:
+    kind: persistentVolumeClaim
+    pvc:
+      size: 5Gi
+
+networking:
+  serviceType: LoadBalancer
+  gamePort: 26900
+# nodePort: 30373
+
+nodeSelector: {}
+
+tolerations: {}
+
+# If you utilize priority classes, you can define the priority class for this deployment here
+# priorityClassName: my-priority-class-name
+
+# extraEnvironmentVars:

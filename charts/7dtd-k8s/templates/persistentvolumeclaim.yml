@@ -1,0 +1,33 @@
+{{ if eq .Values.storage.serverFiles.kind "persistentVolumeClaim" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-server-files
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{ if .Values.storage.serverFiles.pvc.storageClassName }}
+  storageClassName: {{ .Values.storage.serverFiles.pvc.storageClassName }}
+  {{ end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.serverFiles.pvc.size }}
+{{ end }}
+---
+{{ if eq .Values.storage.saveData.kind "persistentVolumeClaim" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-save-data
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{ if .Values.storage.saveData.pvc.storageClassName }}
+  storageClassName: {{ .Values.storage.saveData.pvc.storageClassName }}
+  {{ end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.saveData.pvc.size }}
+{{ end }}

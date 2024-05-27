@@ -1,0 +1,6 @@
+apiVersion: v2
+name: 7dtd-k8s
+description: Basic 7daystodie helm chart, supports persistence.
+icon: https://store.steampowered.com/app/251570/7_Days_to_Die/
+type: application
+version: 0.1.2

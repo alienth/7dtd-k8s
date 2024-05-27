@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: {{ .Release.Name }}
+        env:
+        - name: START_MODE
+          value: "{{ .Values.startMode }}"
+        - name: VERSION
+          value: {{ .Values.serverVersion }}
+        - name: TimeZone
+          value: {{ .Values.timeZone }}
+        {{ if .Values.extraEnvironmentVars -}}
+        {{ range $key, $value := .Values.extraEnvironmentVars }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{ end -}}
+        {{ end -}}
+        ports:
+        - containerPort: 26900
+          protocol: TCP
+          name: gameport1
+        - containerPort: 26900
+          protocol: UDP
+          name: gameport2
+        - containerPort: 26901
+          protocol: UDP
+          name: gameport3
+        - containerPort: 26902
+          protocol: UDP
+          name: gameport4
+        volumeMounts:
+        {{ if .Values.storage.serverFiles.kind -}}
+        - mountPath: /home/sdtdserver/serverfiles/
+          name: server-files
+        {{ end -}}
+        {{ if .Values.storage.saveData.kind -}}
+        - mountPath: /home/sdtdserver/.local/share/7DaysToDie/
+          name: save-data
+        {{ end -}}
+        resources: {{- toYaml .Values.resources | nindent 10 }}
+      volumes:
+      {{ if eq .Values.storage.serverFiles.kind "hostvol" -}}
+      - name: server-files
+        hostPath:
+          path: {{ .Values.storage.serverFiles.hostvol.path }}
+          type: DirectoryOrCreate
+      {{ end -}}
+      {{ if eq .Values.storage.saveData.kind "hostvol" -}}
+      - name: save-data
+        hostPath:
+          path: {{ .Values.storage.serverFiles.hostvol.path }}
+          type: DirectoryOrCreate
+      {{ end -}}
+      {{ if eq .Values.storage.serverFiles.kind "persistentVolumeClaim" -}}
+      - name: server-files
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-server-files
+      {{ end -}}
+      {{ if eq .Values.storage.saveData.kind "persistentVolumeClaim" -}}
+      - name: save-data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-save-data
+      {{ end -}}
+      {{ if .Values.priorityClassName -}}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{ end -}}

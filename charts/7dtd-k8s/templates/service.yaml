@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - name: gameport1
+    port: 26900
+    targetPort: gameport1
+    protocol: TCP
+  - name: gameport2
+    port: 26900
+    targetPort: gameport2
+    protocol: UDP
+  - name: gameport3
+    port: 26901
+    targetPort: gameport3
+    protocol: UDP
+  - name: gameport4
+    port: 26902
+    targetPort: gameport4
+    protocol: UDP
+  type: {{ .Values.networking.serviceType }}
+  selector:
+    app: {{ .Release.Name }}
