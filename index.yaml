@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  7dtd-k8s:
+  - apiVersion: v2
+    created: "2024-05-28T01:50:29.608521288Z"
+    description: Basic 7daystodie helm chart, supports persistence.
+    digest: e911b2e12b61e7474b42c6f8ef7adbd2c1bc1fd57d8415b8de01542e48e3c507
+    icon: https://store.steampowered.com/app/251570/7_Days_to_Die/
+    name: 7dtd-k8s
+    type: application
+    urls:
+    - https://github.com/alienth/7dtd-k8s/releases/download/7dtd-k8s-0.1.2/7dtd-k8s-0.1.2.tgz
+    version: 0.1.2
+generated: "2024-05-28T01:50:29.60854956Z"
